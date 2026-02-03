@@ -17,8 +17,10 @@ public class ClientHandler implements Runnable{
     public void run() {
         try (
                 var input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                var output = new PrintWriter(clientSocket.getOutputStream())
+                var output = new PrintWriter(clientSocket.getOutputStream(), true)
         ) {
+            String line = input.readLine();
+            output.println("Hello World");
 
         } catch (IOException e) {
             throw new RuntimeException(e);
