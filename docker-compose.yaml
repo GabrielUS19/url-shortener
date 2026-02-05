@@ -4,11 +4,11 @@ services:
     container_name: url_s_db
     restart: unless-stopped
     ports:
-      - ${PG_PORT}:5432
+      - ${PG_PORT:-5432}:5432
     environment:
-      POSTGRES_USER: ${PG_USER}
-      POSTGRES_PASSWORD: ${PG_PASSWORD}
-      POSTGRES_DB: ${PG_DB}
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-1234}
+      POSTGRES_DB: ${PG_DB:-url_db}
     volumes:
       - url_shortener_data:/var/lib/postgresql/data
 
