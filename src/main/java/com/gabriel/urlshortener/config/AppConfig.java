@@ -34,4 +34,10 @@ public class AppConfig {
 
         return value != null ? Integer.parseInt(value) : defaultValue;
     }
+
+    public static String getEnvOrDefault(String key, String defaultValue) {
+        String value = get(key);
+
+        return value != null ? value : defaultValue;
+    }
 }
