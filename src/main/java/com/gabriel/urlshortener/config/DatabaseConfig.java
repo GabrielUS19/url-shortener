@@ -9,14 +9,6 @@ public class DatabaseConfig {
     private static final String USER = AppConfig.getEnvOrDefault("PG_USER", "postgres");
     private static final String PASSWORD = AppConfig.getEnvOrDefault("PG_PASSWORD", "1234");
 
-    static {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private DatabaseConfig() {}
 
     public static Connection connect() {
