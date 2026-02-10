@@ -16,11 +16,10 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         try (
-                var input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                var input = clientSocket.getInputStream();
                 var output = new PrintWriter(clientSocket.getOutputStream(), true)
         ) {
-            String line = input.readLine();
-            output.println("Hello World");
+            HttpRequest request = RequestParser.parse(input);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
