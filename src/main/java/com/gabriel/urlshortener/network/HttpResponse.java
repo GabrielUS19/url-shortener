@@ -5,5 +5,5 @@ import java.util.Map;
 public record HttpResponse(
     HttpStatus status,
     Map<String, String> headers,
-    String Body
+    String body
 ) {}

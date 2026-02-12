@@ -11,7 +11,7 @@ public final class RequestParser {
 
     private RequestParser() {}
 
-    public static HttpRequest parse(InputStream inputStream) throws IOException {
+    static HttpRequest parse(InputStream inputStream) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String firstLine = reader.readLine();
