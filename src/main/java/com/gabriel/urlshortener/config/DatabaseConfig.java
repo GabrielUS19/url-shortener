@@ -11,11 +11,7 @@ public class DatabaseConfig {
 
     private DatabaseConfig() {}
 
-    public static Connection connect() {
-        try {
+    public static Connection connect() throws SQLException {
             return DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
