@@ -28,7 +28,7 @@ public final class RequestParser {
 
         while (!(headerLine = reader.readLine()).isEmpty()) {
             var headerParts = headerLine.split(": ", 2);
-            headers.put(parts[0], parts[1]);
+            headers.put(headerParts[0], headerParts[1]);
         }
 
         var body = new StringBuilder();

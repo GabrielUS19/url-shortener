@@ -16,6 +16,7 @@ public final class ResponseParser {
         resString.append("\r\n");
 
         if (response.body() != null) {
+
             resString.append(response.body());
         }
 
