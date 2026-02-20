@@ -2,11 +2,9 @@ package com.gabriel.urlshortener.network;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.gabriel.urlshortener.controllers.UrlController;
 import com.gabriel.urlshortener.dto.ExceptionDTO;
-import com.gabriel.urlshortener.dto.ResponseDTO;
 import com.gabriel.urlshortener.dto.UrlShortenRequest;
 import com.gabriel.urlshortener.utils.UrlValidator;
 

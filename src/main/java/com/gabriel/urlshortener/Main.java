@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 public class Main {
     private static final int PORT = AppConfig.getInt("server.port", 8080);
+    private static final String BASE_URL = AppConfig.getEnvOrDefault("server.base.url", "http://localhost:%s".formatted(PORT));
 
     public static void main(String[] args) {
         try (var conn = DatabaseConfig.connect()) {
@@ -24,7 +25,7 @@ public class Main {
         }
 
         var urlRepository = new UrlRepositoryImpl();
-        var urlService = new UrlServiceImpl(urlRepository);
+        var urlService = new UrlServiceImpl(urlRepository, BASE_URL);
         var urlController = new UrlController(urlService);
 
         var serverSocket = new Server(PORT, urlController);
