@@ -1,14 +1,18 @@
 package com.gabriel.urlshortener.network;
 
+import com.gabriel.urlshortener.controllers.UrlController;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 
 public class Server {
     private final int port;
+    private final UrlController urlController;
 
-    public Server(int port) {
+    public Server(int port, UrlController urlController) {
         this.port = port;
+        this.urlController = urlController;
     }
 
     public void start() {
@@ -20,7 +24,7 @@ public class Server {
             while (!Thread.currentThread().isInterrupted()) {
                 var clientSocket = serverSocket.accept();
 
-                executor.submit(new ClientHandler(clientSocket));
+                executor.submit(new ClientHandler(clientSocket, urlController));
             }
 
         } catch (IOException e) {

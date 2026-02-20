@@ -2,6 +2,7 @@ package com.gabriel.urlshortener.network;
 
 public enum HttpStatus {
     OK(200, "OK"),
+    CREATED(201, "CREATED"),
     FOUND(302, "Found"),
     BAD_REQUEST(400, "Bad Request"),
     NOT_FOUND(404, "Not Found"),
