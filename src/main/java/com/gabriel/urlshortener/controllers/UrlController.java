@@ -1,12 +1,14 @@
 package com.gabriel.urlshortener.controllers;
 
-import com.gabriel.urlshortener.dto.ExceptionDTO;
 import com.gabriel.urlshortener.dto.ResponseDTO;
 import com.gabriel.urlshortener.dto.UrlShortenRequest;
-import com.gabriel.urlshortener.dto.UrlShortenResponse;
-import com.gabriel.urlshortener.network.HttpStatus;
+import com.gabriel.urlshortener.enums.HttpStatus;
+import com.gabriel.urlshortener.exceptions.appexceptions.InvalidUrlException;
+import com.gabriel.urlshortener.network.HttpResponse;
 import com.gabriel.urlshortener.services.UrlService;
 import com.gabriel.urlshortener.utils.UrlValidator;
+
+import java.util.Map;
 
 public class UrlController {
     private final UrlService urlService;
@@ -15,15 +17,19 @@ public class UrlController {
         this.urlService = urlService;
     }
 
-    public ResponseDTO<?> shorten(UrlShortenRequest urlShortenRequest) {
+    public ResponseDTO<Map<String, Object>> shorten(UrlShortenRequest urlShortenRequest) {
         var originalUrl = urlShortenRequest.originalUrl();
 
         if (!UrlValidator.isWebURL(originalUrl)) {
-            return new ResponseDTO<>(HttpStatus.BAD_REQUEST, new ExceptionDTO("Invalid URL", "This URL is not a Web URL."));
+            throw new InvalidUrlException("Invalid URL");
         }
 
-        String shortenedUrl = urlService.shorten(originalUrl);
+        var urlShortenResponse = urlService.shorten(originalUrl);
 
-        return new ResponseDTO<>(HttpStatus.CREATED, new UrlShortenResponse(shortenedUrl, originalUrl));
+        return new ResponseDTO<>(HttpStatus.CREATED, Map.of(
+                "success", true,
+                "message", "URL shortened",
+                "data", urlShortenResponse
+        ));
     }
 }

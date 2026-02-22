@@ -1,5 +1,7 @@
 package com.gabriel.urlshortener.services;
 
+import com.gabriel.urlshortener.dto.UrlShortenResponse;
+
 public interface UrlService {
-    String shorten(String originalUrl);
+    UrlShortenResponse shorten(String originalUrl);
 }

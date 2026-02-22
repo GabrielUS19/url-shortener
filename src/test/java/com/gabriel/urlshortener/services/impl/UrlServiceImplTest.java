@@ -1,8 +1,8 @@
 package com.gabriel.urlshortener.services.impl;
 
 import com.gabriel.urlshortener.entities.Url;
-import com.gabriel.urlshortener.exceptions.GenerateUniqueUrlException;
-import com.gabriel.urlshortener.exceptions.InvalidUrlException;
+import com.gabriel.urlshortener.exceptions.appexceptions.GenerateUniqueUrlException;
+import com.gabriel.urlshortener.exceptions.appexceptions.InvalidUrlException;
 import com.gabriel.urlshortener.repositories.UrlRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

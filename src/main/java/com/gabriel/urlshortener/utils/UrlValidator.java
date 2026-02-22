@@ -12,6 +12,10 @@ public final class UrlValidator {
 
     public static boolean isWebURL(String urlString) {
         try {
+            if (urlString == null) {
+                return false;
+            }
+
             var uri = new URI(urlString);
             var scheme = uri.getScheme();
 

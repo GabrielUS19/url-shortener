@@ -1,9 +1,9 @@
 package com.gabriel.urlshortener.services.impl;
 
-import com.gabriel.urlshortener.config.AppConfig;
+import com.gabriel.urlshortener.dto.UrlShortenResponse;
 import com.gabriel.urlshortener.entities.Url;
-import com.gabriel.urlshortener.exceptions.GenerateUniqueUrlException;
-import com.gabriel.urlshortener.exceptions.InvalidUrlException;
+import com.gabriel.urlshortener.exceptions.appexceptions.GenerateUniqueUrlException;
+import com.gabriel.urlshortener.exceptions.appexceptions.InvalidUrlException;
 import com.gabriel.urlshortener.repositories.UrlRepository;
 import com.gabriel.urlshortener.services.UrlService;
 import com.gabriel.urlshortener.utils.ShortcodeGenerator;
@@ -20,7 +20,7 @@ public class UrlServiceImpl implements UrlService {
     }
 
     @Override
-    public String shorten(String originalUrl) {
+    public UrlShortenResponse shorten(String originalUrl) {
         if (originalUrl == null || originalUrl.isBlank()) {
             throw new InvalidUrlException("Original URL required");
         }
@@ -45,7 +45,7 @@ public class UrlServiceImpl implements UrlService {
             var entityUrl = new Url(originalUrl, shortCode);
             urlRepository.insert(entityUrl);
 
-            return shortenedUrl;
+            return new UrlShortenResponse(shortenedUrl, originalUrl);
         }
 
         throw new GenerateUniqueUrlException("It was not possible to generate a unique URL right now");

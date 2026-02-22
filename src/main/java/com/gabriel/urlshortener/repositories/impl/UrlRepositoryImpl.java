@@ -1,12 +1,9 @@
 package com.gabriel.urlshortener.repositories.impl;
 
-import com.gabriel.urlshortener.config.AppConfig;
 import com.gabriel.urlshortener.config.DatabaseConfig;
 import com.gabriel.urlshortener.entities.Url;
 import com.gabriel.urlshortener.repositories.UrlRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class UrlRepositoryImpl implements UrlRepository {
