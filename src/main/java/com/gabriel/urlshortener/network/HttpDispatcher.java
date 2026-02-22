@@ -1,14 +1,15 @@
 package com.gabriel.urlshortener.network;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.gabriel.urlshortener.controllers.UrlController;
-import com.gabriel.urlshortener.dto.ExceptionDTO;
 import com.gabriel.urlshortener.dto.UrlShortenRequest;
+import com.gabriel.urlshortener.enums.HttpStatus;
+import com.gabriel.urlshortener.exceptions.AppException;
+import com.gabriel.urlshortener.utils.JacksonUtils;
 import com.gabriel.urlshortener.utils.UrlValidator;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class HttpDispatcher {
@@ -19,75 +20,64 @@ public class HttpDispatcher {
         this.urlController = urlController;
     }
 
-    public HttpResponse dispatch(HttpRequest request) throws JsonProcessingException {
+    public String dispatch(HttpRequest request, Responser response) {
         String requestMethod = request.method().toString();
         String requestPath = request.path();
         String requestBody = request.body();
 
-        if (requestBody == null || requestBody.isBlank()) {
-            var exception = new ExceptionDTO("Invalid request", "Required body");
-            var body = objectMapper.writeValueAsString(exception);
-            var bodyLength = String.valueOf(body.getBytes(StandardCharsets.UTF_8).length);
+        try {
+            if (requestMethod.equals("POST") && requestPath.equals("/shorten")) {
+                var shortenRequest = objectMapper.readValue(requestBody, UrlShortenRequest.class);
 
-            var headers = Map.of(
-                    "Content-Type", "application/json",
-                    "Content-Length", bodyLength,
-                    "Connection", "close"
-            );
+                var res = urlController.shorten(shortenRequest);
 
-            return new HttpResponse(HttpStatus.BAD_REQUEST, headers, body);
-        }
-
-        if (requestMethod.equals("POST") && requestPath.equals("/shorten")) {
-            try {
-                var urlShortenRequest = objectMapper.readValue(requestBody, UrlShortenRequest.class);
-
-                var responseController = urlController.shorten(urlShortenRequest);
-
-                var status = responseController.status();
-
-                String body = objectMapper.writeValueAsString(responseController.body());
-                var bodyLength = String.valueOf(body.getBytes(StandardCharsets.UTF_8).length);
-
-                var headers = Map.of(
-                        "Content-Type", "application/json",
-                        "Content-Length", bodyLength,
-                        "Connection", "close"
-                );
-
-                return new HttpResponse(status, headers, body);
-
-            } catch (UnrecognizedPropertyException e) {
-                var exception = new ExceptionDTO("Unrecognized Field", "Unrecognized field '%s'".formatted(e.getPropertyName()));
-                var body = objectMapper.writeValueAsString(exception);
-                var bodyLength = String.valueOf(body.getBytes(StandardCharsets.UTF_8).length);
-
-                var headers = Map.of(
-                        "Content-Type", "application/json",
-                        "Content-Length", bodyLength,
-                        "Connection", "close"
-                );
-
-                return new HttpResponse(HttpStatus.BAD_REQUEST, headers, body);
-
-            } catch (Exception e) {
-                System.err.println(e);
-                throw new RuntimeException(e);
+                return response.sendJson(res.status(), res.body());
             }
 
-        }
+            if (requestMethod.equals("GET") && UrlValidator.isValidShortcode(requestPath.replace("/", ""))) {
+                return response.redirect(HttpStatus.FOUND, "https://www.youtube.com");
+            }
 
-        if (requestMethod.equals("GET") && UrlValidator.isValidShortcode(requestPath.replace("/", ""))) {
-            var headers = Map.of(
-                    "Location", "https://www.youtube.com",
-                    "Connection", "close"
+            return response.sendJson(HttpStatus.NOT_FOUND, Map.of(
+                    "success", false,
+                    "message", "Error 404: Page Not Found",
+                    "data", ""
+                    ));
+
+        } catch (AppException e) {
+            return response.sendJson(HttpStatus.BAD_REQUEST, Map.of(
+                    "success", false,
+                    "message", e.getMessage(),
+                    "data", ""
+            ));
+
+        } catch (JsonParseException e) {
+            String message = e.getOriginalMessage();
+
+            Map<String, Object> body = Map.of(
+                    "success", false,
+                    "message", message,
+                    "data", "");
+
+            return response.sendJson(HttpStatus.BAD_REQUEST, body);
+
+        } catch (JsonMappingException e) {
+            Map<String, Object> body = Map.of(
+                    "success", false,
+                    "message", JacksonUtils.handleJacksonMappingException(e),
+                    "data", ""
             );
-            return new HttpResponse(HttpStatus.FOUND, headers, null);
+
+            return response.sendJson(HttpStatus.BAD_REQUEST, body);
+
+        } catch (Exception e) {
+            Map<String, Object> body = Map.of(
+                    "success", false,
+                    "message", "Server Internal Error",
+                    "data", "");
+
+            e.printStackTrace();
+            return response.sendJson(HttpStatus.SERVER_INTERNAL_ERROR, body);
         }
-
-        String body404 = "Error 404: Page Not Found";
-        var headers404 = Map.of("Content-Length", String.valueOf(body404.getBytes(StandardCharsets.UTF_8).length));
-
-        return new HttpResponse(HttpStatus.NOT_FOUND, headers404, body404);
     }
 }

@@ -1,8 +1,8 @@
-package com.gabriel.urlshortener.network;
+package com.gabriel.urlshortener.enums;
 
 public enum HttpStatus {
     OK(200, "OK"),
-    CREATED(201, "CREATED"),
+    CREATED(201, "Created"),
     FOUND(302, "Found"),
     BAD_REQUEST(400, "Bad Request"),
     NOT_FOUND(404, "Not Found"),
