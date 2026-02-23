@@ -41,9 +41,9 @@ class UrlServiceImplTest {
 
         when(urlRepository.getByShortcode(anyString())).thenReturn(null);
 
-        String result = urlService.shorten(originalUrl);
+        var result = urlService.shorten(originalUrl);
 
-        assertTrue(result.startsWith("https://test"));
+        assertTrue(result.shortenedUrl().startsWith("https://test"));
         verify(urlRepository, times(1)).insert(any(Url.class));
     }
 
