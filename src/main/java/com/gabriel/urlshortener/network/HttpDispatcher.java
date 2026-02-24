@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabriel.urlshortener.controllers.UrlController;
+import com.gabriel.urlshortener.dto.UrlRedirectRequest;
 import com.gabriel.urlshortener.dto.UrlShortenRequest;
 import com.gabriel.urlshortener.enums.HttpStatus;
 import com.gabriel.urlshortener.exceptions.AppException;
@@ -35,7 +36,11 @@ public class HttpDispatcher {
             }
 
             if (requestMethod.equals("GET") && UrlValidator.isValidShortcode(requestPath.replace("/", ""))) {
-                return response.redirect(HttpStatus.FOUND, "https://www.youtube.com");
+                var shortCode = requestPath.replace("/", "");
+
+                var originalUrl = urlController.redirect(new UrlRedirectRequest(shortCode));
+
+                return response.redirect(HttpStatus.FOUND, originalUrl);
             }
 
             return response.sendJson(HttpStatus.NOT_FOUND, Map.of(
