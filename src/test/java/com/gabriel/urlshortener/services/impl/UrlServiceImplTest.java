@@ -1,5 +1,6 @@
 package com.gabriel.urlshortener.services.impl;
 
+import com.gabriel.urlshortener.dto.UrlRedirectResponse;
 import com.gabriel.urlshortener.entities.Url;
 import com.gabriel.urlshortener.exceptions.appexceptions.GenerateUniqueUrlException;
 import com.gabriel.urlshortener.exceptions.appexceptions.InvalidShortCodeException;
@@ -111,6 +112,8 @@ class UrlServiceImplTest {
         verify(urlRepository, times(3)).getByShortcode(anyString());
     }
 
+    // Redirect Tests
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n", "-92jas", "ak kls", "asduwjk", "ywh67"})
@@ -129,7 +132,7 @@ class UrlServiceImplTest {
     void shouldThrowUrlNotFoundExceptionWhenUrlNotFound() {
         var shortcode = "JhsSki";
 
-        when(urlRepository.getByShortcode(anyString())).thenReturn(null);
+        when(urlRepository.getByShortcode(shortcode)).thenReturn(null);
 
         var exception = assertThrows(
                 UrlNotFoundException.class,
@@ -137,6 +140,24 @@ class UrlServiceImplTest {
         );
 
         assertEquals("Error 404: Page Not Found", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should return an UrlRedirectResponse when the shortcode provided is valid")
+    void shouldReturnUrlRedirectResponseWhenValidShortcode() {
+        var shortcode = "JhsSki";
+
+        var url = new Url("https://valid.url", "JhsSki");
+
+        when(urlRepository.getByShortcode(shortcode)).thenReturn(url);
+
+        var result = urlService.redirect(shortcode);
+
+        verify(urlRepository, times(1)).getByShortcode(shortcode);
+
+        assertEquals(UrlRedirectResponse.class, result.getClass());
+
+        assertEquals("https://valid.url", result.originalUrl());
     }
 
 }
