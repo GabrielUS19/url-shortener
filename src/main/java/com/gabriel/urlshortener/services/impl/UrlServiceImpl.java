@@ -57,7 +57,7 @@ public class UrlServiceImpl implements UrlService {
 
     @Override
     public UrlRedirectResponse redirect(String shortCode) {
-        if (!UrlValidator.isValidShortcode(shortCode)) {
+        if (shortCode == null || !UrlValidator.isValidShortcode(shortCode)) {
             throw new InvalidShortCodeException("Invalid Shortcode", HttpStatus.BAD_REQUEST);
         }
 

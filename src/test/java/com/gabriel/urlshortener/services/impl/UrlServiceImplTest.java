@@ -2,7 +2,9 @@ package com.gabriel.urlshortener.services.impl;
 
 import com.gabriel.urlshortener.entities.Url;
 import com.gabriel.urlshortener.exceptions.appexceptions.GenerateUniqueUrlException;
+import com.gabriel.urlshortener.exceptions.appexceptions.InvalidShortCodeException;
 import com.gabriel.urlshortener.exceptions.appexceptions.InvalidUrlException;
+import com.gabriel.urlshortener.exceptions.appexceptions.UrlNotFoundException;
 import com.gabriel.urlshortener.repositories.UrlRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -108,4 +110,33 @@ class UrlServiceImplTest {
         );
         verify(urlRepository, times(3)).getByShortcode(anyString());
     }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "\t", "\n", "-92jas", "ak kls", "asduwjk", "ywh67"})
+    @DisplayName("Should throw a InvalidShortcodeException when an invalid shortcode is provided")
+    void shouldThrowInvalidShortcodeExceptionWhenInvalidShortcode(String shortcode) {
+        var exception = assertThrows(
+                InvalidShortCodeException.class,
+                () -> urlService.redirect(shortcode)
+        );
+
+        assertEquals("Invalid Shortcode", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should Throw UrlNotFoundException when the url is not found")
+    void shouldThrowUrlNotFoundExceptionWhenUrlNotFound() {
+        var shortcode = "JhsSki";
+
+        when(urlRepository.getByShortcode(anyString())).thenReturn(null);
+
+        var exception = assertThrows(
+                UrlNotFoundException.class,
+                () -> urlService.redirect(shortcode)
+        );
+
+        assertEquals("Error 404: Page Not Found", exception.getMessage());
+    }
+
 }
