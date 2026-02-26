@@ -1,6 +1,8 @@
 package com.gabriel.urlshortener.controllers;
 
 import com.gabriel.urlshortener.dto.ResponseDTO;
+import com.gabriel.urlshortener.dto.UrlRedirectRequest;
+import com.gabriel.urlshortener.dto.UrlRedirectResponse;
 import com.gabriel.urlshortener.dto.UrlShortenRequest;
 import com.gabriel.urlshortener.enums.HttpStatus;
 import com.gabriel.urlshortener.exceptions.appexceptions.InvalidUrlException;
@@ -31,5 +33,13 @@ public class UrlController {
                 "message", "URL shortened",
                 "data", urlShortenResponse
         ));
+    }
+
+    public String redirect(UrlRedirectRequest urlRedirectRequest) {
+        var shortCode = urlRedirectRequest.shortCode();
+
+        var urlRedirectResponse = urlService.redirect(shortCode);
+
+        return urlRedirectResponse.originalUrl();
     }
 }

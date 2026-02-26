@@ -1,23 +1,24 @@
 package com.gabriel.urlshortener.entities;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public class Url {
-    private String id;
+    private UUID id;
     private final String originalUrl;
     private final String shortCode;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     public Url(String originalUrl, String shortCode) {
         this.originalUrl = originalUrl;
         this.shortCode = shortCode;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -29,11 +30,11 @@ public class Url {
         return shortCode;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
