@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConfig {
-    private static final String URL = AppConfig.getEnvOrDefault("PG_URL", "jdbc:postgresql://localhost:5432/url_db");
-    private static final String USER = AppConfig.getEnvOrDefault("PG_USER", "postgres");
-    private static final String PASSWORD = AppConfig.getEnvOrDefault("PG_PASSWORD", "1234");
+    private static final String URL = AppConfig.get("PG_URL");
+    private static final String USER = AppConfig.get("PG_USER");
+    private static final String PASSWORD = AppConfig.get("PG_PASSWORD");
 
     private DatabaseConfig() {}
 
