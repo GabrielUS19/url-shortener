@@ -1,0 +1,22 @@
+# Maven build output
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+
+# Version Control
+.git/
+.gitignore
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.iml
+
+# Docker and Infrastructure configuration
+Dockerfile
+.dockerignore
+docker-compose.yaml
+
+# Documentation
+*.md
